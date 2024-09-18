@@ -32,7 +32,7 @@ def add_note():
         temp_file.flush()
         temp_file.close()
 
-        subprocess.run(['nano', temp_filename])
+        subprocess.run(['gedit', temp_filename])
 
         with open(temp_filename, 'r') as temp_file:
             edited_notes = temp_file.read().strip().split('\n')
@@ -82,12 +82,14 @@ def delete_note():
 
 def main():
     global notes_dict
-    filename = 'notes.json'
+    home_dir = os.path.expanduser("~")
+    
+    filename = os.path.join(home_dir, 'notes.json')
     notes_dict = load_notes(filename)
 
     parser = argparse.ArgumentParser(description="Notes app")
     parser.add_argument('-e', '--edit', action='store_true', help="Add or edit a note")
-    parser.add_argument('-f', '--find', action='store_true', help="Search notes")
+    parser.add_argument('-f', '--search', action='store_true', help="Search notes")
     parser.add_argument('-l', '--list', action='store_true', help="List all topics")
     parser.add_argument('-s', '--show', action='store_true', help="Display full note")
     parser.add_argument('-d', '--delete', action='store_true', help="Delete a note")
@@ -99,7 +101,7 @@ def main():
             notes_dict[topic] = {}
         notes_dict[topic][subtopic] = notes
         save_notes(filename, notes_dict)
-    elif args.find:
+    elif args.search:
         search_notes(notes_dict)
     elif args.list:
         list_topics(notes_dict)
